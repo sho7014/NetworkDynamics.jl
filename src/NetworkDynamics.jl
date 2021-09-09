@@ -110,7 +110,8 @@ function network_dynamics(vertices!::Union{Array{T, 1}, T},
                           edges!::Union{Array{U, 1}, U},
                           graph;
                           x_prototype=zeros(1),
-                          parallel=false) where {T <: ODEVertex, U <: StaticEdge}
+                          parallel=false) where {T <: Union{ODEVertex, NonDiagonalSDEVertex}, U <: StaticEdge}
+                          #parallel=false) where {T <: ODEVertex, U <: StaticEdge}
 
     warn_parallel(parallel)
 

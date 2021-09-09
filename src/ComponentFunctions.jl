@@ -16,6 +16,7 @@ export EdgeFunction
 export StaticVertex
 export StaticEdge
 export ODEVertex
+export NonDiagonalSDEVertex
 export ODEEdge
 export DDEVertex
 export StaticDelayEdge
@@ -320,6 +321,44 @@ function DDEVertex(sv::StaticVertex)
         end
         return DDEVertex(f!, dim, 0., sym)
     end
+end
+
+"""
+    NonDiagonalSDEVertex(f!, dim, noise_dim, mass_matrix, sym)
+
+Wrapper that ensures compatibility of a **mutating** function **`f!`** with
+the key constructor `network_dynamics`.
+
+**`f!`**  describes the local behaviour at a dynamic node and has to respect
+the following calling syntax
+
+```julia
+f!(dv, v, edges, p, t) -> nothing
+```
+
+Here `dv`, `v`, `p` and `t` are the usual ODE arguments, while
+`edges` is an Array containing the edges for which the vertex is the destination (in-edges for directed graphs).
+
+**`dim`** is the number of independent variables in the vertex equations, 
+**`noise_dim`** is the number of compunents of noise in the vertex equations and
+**`slide`** controls how the non-diagonal noise is injected, 
+if it is set zero, the noise is vertex-independent (common noise), 
+while if it is set equals to **`noise_dim`**, the noise can be vertex-dependent. 
+Note that **`noise_rate_prototype`** of a SDEProblem should be appropiately prepared.  
+**`sym`** is an array of symbols for these variables.
+**`mass_matrix`** is an optional argument that defaults to the identity
+matrix `I`. If a mass matrix M is given the system `M * dv = f!` will be
+solved.
+
+For more details see the documentation.
+"""
+@Base.kwdef struct NonDiagonalSDEVertex{T} <: VertexFunction
+    f!::T # signature (dx, x, edges, p, t) -> nothing
+    dim::Int
+    noise_dim::Int
+    slide::Int 
+    mass_matrix=I
+    sym=[:v for i in 1:dim]
 end
 
 # Promotion rules [eventually there might be too many types to hardcode everyhting]

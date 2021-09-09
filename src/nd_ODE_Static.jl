@@ -58,6 +58,18 @@ function _inner_loop!(dx, p, t, gd, gs,
 end
 
 function _inner_loop!(dx, p, t, gd, gs,
+                        component::T, indices, parallel) where T <: NonDiagonalSDEVertex
+    @nd_threads parallel for i in indices
+        component.f!(view(dx,gs.v_idx[i],(component.slide*(i-1)) .+ (1:component.noise_dim)),
+                get_vertex(gd, i),
+                get_dst_edges(gd, i),
+                p_v_idx(p, i),
+                t)
+    end
+    return nothing
+end
+
+function _inner_loop!(dx, p, t, gd, gs,
                          component::T, indices, parallel) where T <: StaticEdge
     @nd_threads parallel for i in indices
         component.f!(get_edge(gd, i),
@@ -88,7 +100,7 @@ function (d::nd_ODE_Static)(dx, x, p, t)
     checkbounds_p(p, gs.num_v, gs.num_e)
     gd = prep_gd(dx, x, d.graph_data, d.graph_structure)
 
-    @assert size(dx) == size(x) "Sizes of dx and x do not match"
+    #@assert size(dx) == size(x) "Sizes of dx and x do not match"
 
     # Pass nothing, because here we have only Static Edges
     component_loop!(nothing, p, t, gd, gs,
