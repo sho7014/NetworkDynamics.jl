@@ -1,6 +1,6 @@
 Fork of [NetworkDynamics.jl](https://github.com/PIK-ICoNe/NetworkDynamics.jl) modified to deal with non-diagonal noise.
 
-A new vertex struct **`NonDiagonalSDEVertex(f!, dim, noise_dim, slide, mass_matrix, sym)`** is introduced.  
+A new vertex struct **`NonDiagonalSDEVertex(f!, dim, noise_dim::Int, slide::Int, mass_matrix, sym)`** is introduced.  
 
 - **`noise_dim`** is the number of components of noise in a vertex equation (vertex-wise Ito dimension). Only problems with homogeneous Ito dimesions are currently supported.  
 - **`slide`** controls how the non-diagonal noise is injected. if it is set zero, the noise is vertex-independent (common noise), while if it is set equals to **`noise_dim`**, the noise can be vertex-dependent.  
