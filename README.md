@@ -6,7 +6,7 @@ A new vertex struct **`NonDiagonalSDEVertex(f!, dim, noise_dim::Int, slide::Int,
 - **`slide`** controls how the non-diagonal noise is injected. if it is set zero, the noise is vertex-independent (common noise), while if it is set equals to **`noise_dim`**, the noise can be vertex-dependent.  
     **`noise_rate_prototype`** of a **`SDEProblem`** should also be appropriately adjusted in accordance with whether the noise is shared or not. Consider a system of SDEs with **`N`** vertices for an example. If the noise is shared among vertices, **`noise_rate_prototype`** should be an array of size **`(N*dim, noise_dim)`**, otherwise set it that of size **`(N*dim, N*noise_dim)`**. 
 
-This is just a naive workaround, so its performance has not been examined and important features such as sparse arrays for **`noise_rate_prototype`** are not supported. The features which are not tested and hence might not be supported currently is as follows. 
+This is just a naive workaround, so its performance has not been examined and important features such as sparse arrays for **`noise_rate_prototype`** are not supported. The features which are not tested and hence might not be supported currently are as follows. 
 
 - Non-identity mass matrix
 - **`ODEEdge`**
